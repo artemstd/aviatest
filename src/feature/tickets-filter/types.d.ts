@@ -6,7 +6,8 @@ export interface ITicketsFilterState {
 }
 
 export interface ITicketsFilterReducers<State> extends SliceCaseReducers<State> {
-    toggleStop: CaseReducer<State, PayloadAction<ArrayElement<ITicketsFilterState["stops"]>>>
+    toggleTicketsFilterStop: CaseReducer<State, PayloadAction<ArrayElement<ITicketsFilterState["stops"]>>>
+    setTicketsFilterStops: CaseReducer<State, PayloadAction<ITicketsFilterState["stops"]>>
 }
 
 export type TTicketsFilterName = "ticketsFilter";

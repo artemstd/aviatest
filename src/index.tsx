@@ -1,13 +1,10 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { render } from 'react-dom';
 import { createGlobalStyle } from 'styled-components';
 import { Provider } from 'react-redux';
 import store from './common/store';
 import { fetchTicketsChaining } from './feature/tickets/ticketsSlice';
-import TicketsList from './feature/tickets/organisms/tickets-list';
-import DefaultTemplate from './common/templates/default-template';
-import Header from "./common/organisms/header";
-import TicketsFilterStops from './feature/tickets-filter/organisms/tickets-filter-stops';
+import IndexPage from './common/pages/index';
 
 store.dispatch(fetchTicketsChaining());
 
@@ -43,13 +40,9 @@ export const GlobalStyle = createGlobalStyle`
     }
 `;
 
-const App:FC = () => {
+const App: FC = () => {
     return <Provider store={ store }>
-        <DefaultTemplate
-            header={ <Header /> }
-            leftAside={ <TicketsFilterStops maxStops={ 3 } /> }
-            content={ <TicketsList /> }
-        />
+        <IndexPage />
     </Provider>;
 }
 

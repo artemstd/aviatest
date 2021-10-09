@@ -10,14 +10,20 @@ const ticketsFilterSlice = createSlice<typeof initialState, ITicketsFilterReduce
     name: "ticketsFilter",
     initialState,
     reducers: {
-        toggleStop: (state, action) => {
+        toggleTicketsFilterStop: (state, action) => {
             const i = state.stops.indexOf(action.payload);
             ~i ? state.stops.splice(i, 1) : state.stops.push(action.payload);
+        },
+        setTicketsFilterStops: (state, action) => {
+            state.stops = action.payload;
         }
     }
 });
 
-export const { toggleStop } = ticketsFilterSlice.actions;
+export const {
+    toggleTicketsFilterStop,
+    setTicketsFilterStops
+} = ticketsFilterSlice.actions;
 
 export const selectTicketsFilterStops = (state: IRootState) => state.ticketsFilter.stops;
 

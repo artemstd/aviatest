@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler } from "react";
+import { FC, MouseEventHandler, useCallback } from "react";
 import FilterRow from "../../../../common/atoms/filter-row";
 import CheckboxRow from "../../../../common/molecules/checkbox-row";
 import { plural } from "../../../../common/utils";
@@ -6,18 +6,34 @@ import { ITicketsFilterStopsProps } from "./types";
 import FilterHeader from "../../../../common/atoms/filter-header";
 import FilterBlock from "../../../../common/atoms/filter-block";
 import useCustomSelector from "../../../../common/hooks/useCustomSelector";
-import { selectTicketsFilterStops, toggleStop } from "../../ticketsFilterSlice";
+import { selectTicketsFilterStops, setTicketsFilterStops, toggleTicketsFilterStop } from "../../ticketsFilterSlice";
 import useCustomDispatch from "../../../../common/hooks/useCustomDispatch";
 
 const TicketsFilterStops: FC<ITicketsFilterStopsProps> = ({ maxStops }) => {
     const dispatch = useCustomDispatch();
     const stops = useCustomSelector(selectTicketsFilterStops);
+    const countFilters = maxStops + 1;
 
-    let rows = [];
+    const onClickAll = useCallback<MouseEventHandler>((e) => {
+        e.preventDefault();
+        if (stops.length < countFilters) {
+            dispatch(setTicketsFilterStops(Array.from(Array(countFilters).keys())));
+        } else {
+            dispatch(setTicketsFilterStops([]));
+        }
+    }, [stops.length, countFilters, dispatch]);
+
+    let rows = [
+        <FilterRow key={ "__all__" } withHover onClick={ onClickAll }>
+            <CheckboxRow readOnly checked={ stops.length === countFilters }>
+                Все
+            </CheckboxRow>
+        </FilterRow>
+    ];
     for (let i = 0; i <= maxStops; i++) {
         const onClick: MouseEventHandler = (e) => {
             e.preventDefault();
-            dispatch(toggleStop(i));
+            dispatch(toggleTicketsFilterStop(i));
         }
 
         rows.push(
