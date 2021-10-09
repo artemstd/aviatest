@@ -1,4 +1,5 @@
 import { FC, memo } from "react";
+import styled from "styled-components";
 import Block from "../../../../common/atoms/block";
 import Price from "../../../../common/atoms/price";
 import Image from "../../../../common/atoms/image";
@@ -11,17 +12,17 @@ import TimeDuration from "../../../../common/atoms/time-duration";
 
 const TicketsItem: FC<ITicketsItemProps> = ({ ticket, className }) => {
     return <Block className={ className }>
-        <div>
+        <div className="tickets-item__header">
             <Price price={ ticket.price } currency="rub" />
             <Image src={ getImageUrlForAviaCode(ticket.carrier) } />
         </div>
-        <div>
+        <div className="tickets-item__content">
             {
                 ticket.segments.map(
-                    (segment) => {
+                    (segment, i) => {
                         const date1 = segment.date;
                         const date2 = moment(segment.date).add(segment.duration, "minutes")
-                        return <TicketsInfoRow
+                        return <TicketsInfoRow key={ i }
                             bricksData={[
                                 {
                                     topText: `${ segment.origin } - ${ segment.destination }`,
@@ -48,4 +49,18 @@ const TicketsItem: FC<ITicketsItemProps> = ({ ticket, className }) => {
     </Block>;
 }
 
-export default memo(TicketsItem);
+export default memo(
+    styled(TicketsItem)`
+        .tickets-item__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tickets-item__content {
+            margin-top: var(--internal-indent);
+            > ${TicketsInfoRow} + ${TicketsInfoRow} {
+                margin-top: var(--internal-indent-half);
+            }
+        }
+    `
+);

@@ -3,7 +3,6 @@ import { IButtonProps } from "./types";
 
 const Button = styled.button<IButtonProps>`
     text-transform: uppercase;
-    font-weight: 600;
     line-height: 20px;
     text-align: center;
     padding: 15px 24px;

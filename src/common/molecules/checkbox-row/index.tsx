@@ -4,14 +4,14 @@ import Label from '../../atoms/label';
 import Checkbox from '../../atoms/checkbox';
 import { ICheckboxRowProps } from "./types";
 
-const CheckboxRowRaw: FC<ICheckboxRowProps> = ({ className, children, ...checkboxProps }) => (
+const CheckboxRow: FC<ICheckboxRowProps> = ({ className, children, ...checkboxProps }) => (
     <Label className={ className }>
         <Checkbox { ...checkboxProps } />
         { children }
     </Label>
 );
 
-const CheckboxRow = styled(CheckboxRowRaw)`
+export default styled(CheckboxRow)`
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -19,5 +19,3 @@ const CheckboxRow = styled(CheckboxRowRaw)`
         margin-right: 10px;
     }
 `;
-
-export default CheckboxRow;

@@ -4,12 +4,11 @@ import { Span } from "../typography";
 
 const StyledSpan = styled(Span)`
     line-height: 12px;
-    font-weight: 600;
     text-transform: uppercase;
 `;
 
 const Wrapper = styled.div<HTMLAttributes<HTMLDivElement>>`
-    padding: var(--internal-indent) var(--internal-indent) var(--internal-indent-half);
+    padding: var(--internal-indent-half) var(--internal-indent);
 `;
 
 const FilterHeader: FC<HTMLAttributes<HTMLDivElement>> = ({ children, ...otherProps }) => {

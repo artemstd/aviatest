@@ -10,14 +10,12 @@ const Wrapper = styled.div<HTMLAttributes<HTMLDivElement>>`
 
 const StyledSpanTop = styled(Span)`
     color: var(--color-text-gray);
-    font-weight: 600;
     text-transform: uppercase;
 `;
 
 const StyledSpanBottom = styled(Span)`
     font-size: 14px;
     line-height: 21px;
-    font-weight: 600;
 `;
 
 const TicketsInfoBrick: FC<ITicketsInfoBrickProps> = ({ topText, bottomText }) => (

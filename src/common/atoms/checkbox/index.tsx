@@ -2,14 +2,14 @@ import { FC } from "react";
 import styled from "styled-components";
 import { ICheckboxProps } from "./types";
 
-const CheckboxRaw: FC<ICheckboxProps> = ({ className, ...otherProps }) => (
+const Checkbox: FC<ICheckboxProps> = ({ className, ...otherProps }) => (
     <label className={className}>
         <input type="checkbox" { ...otherProps } />
         <span />
     </label>
 );
 
-const Checkbox = styled(CheckboxRaw)`
+export default styled(Checkbox)`
     position: relative;
     display: inline-block;
     width: 20px;
@@ -47,5 +47,3 @@ const Checkbox = styled(CheckboxRaw)`
         border-radius: 2px;
     }
 `;
-
-export default Checkbox;

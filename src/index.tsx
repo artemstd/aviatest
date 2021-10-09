@@ -5,6 +5,9 @@ import { Provider } from 'react-redux';
 import store from './common/store';
 import { fetchTicketsChaining } from './feature/tickets/ticketsSlice';
 import TicketsList from './feature/tickets/organisms/tickets-list';
+import DefaultTemplate from './common/templates/default-template';
+import Header from "./common/organisms/header";
+import TicketsFilterStops from './feature/tickets-filter/organisms/tickets-filter-stops';
 
 store.dispatch(fetchTicketsChaining());
 
@@ -21,7 +24,7 @@ export const GlobalStyle = createGlobalStyle`
         --color-blue: #2196F3;
         --size-text: 12px;
         --height-text: 18px;
-        --font: Open-Sans;
+        --font: 'Open Sans', sans-serif;
         --bg-color-list-hover: #F1FCFF;
         --bg-color-wrapper-default: #FFF;
         --bg-color-body: #f3f7fa;
@@ -41,15 +44,12 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 const App:FC = () => {
-    const [ checked, setChecked ] = useState(false);
-
-    const onChange = (e:any) => {
-        e.preventDefault();
-        setChecked(!checked);
-    }
-
     return <Provider store={ store }>
-        <TicketsList />
+        <DefaultTemplate
+            header={ <Header /> }
+            leftAside={ <TicketsFilterStops maxStops={ 3 } /> }
+            content={ <TicketsList /> }
+        />
     </Provider>;
 }
 

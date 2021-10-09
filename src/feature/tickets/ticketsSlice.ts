@@ -62,7 +62,7 @@ const ticketsSlice = createSlice<typeof initialState, ITicketsReducers<typeof in
         },
         ticketsFetched: (state, action) => {
             ticketsEntityAdapter.addMany(state, action.payload.tickets)
-            state.searchStop = !!action.payload.stop;
+            state.searchStop = true//!!action.payload.stop;
         }
     }
 });
@@ -71,7 +71,8 @@ export const { loadingStart, loadingSuccess, loadingError, searchIdFetched, tick
 
 export const {
     selectAll: selectAllTickets,
-    selectEntities: selectEntitiesTickets
+    selectEntities: selectEntitiesTickets,
+    selectIds: selectIdsTickets
 } = ticketsEntityAdapter.getSelectors<IRootState>(state => state.tickets);
 
 export default ticketsSlice.reducer;
