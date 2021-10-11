@@ -1,9 +1,10 @@
-import { FC, HTMLAttributes, memo, useState, useCallback, MouseEventHandler } from "react";
+import { FC, HTMLAttributes, memo, useState, useCallback, MouseEventHandler, useEffect } from "react";
 import styled from "styled-components";
 import Button from "../../../../common/atoms/button";
+import useCustomDispatch from "../../../../common/hooks/useCustomDispatch";
 import useCustomSelector from "../../../../common/hooks/useCustomSelector";
 import { plural } from "../../../../common/utils";
-import { selectEntitiesTickets, selectIdsTickets } from "../../ticketsSlice";
+import { fetchTicketsChaining, selectFilteredSortedTickets } from "../../ticketsSlice";
 import TicketsItem from "../tickets-item";
 
 const PAGE_LIMIT = 5;
@@ -11,21 +12,24 @@ const PAGE_LIMIT = 5;
 const TicketsList: FC<HTMLAttributes<HTMLDivElement>> = ({ className }) => {
     const [ page, setPage ] = useState<number>(0);
 
-    const ticketsEntities = useCustomSelector(selectEntitiesTickets);
-    const ticketsIds = useCustomSelector(selectIdsTickets);
-    const ticketsShowIds = ticketsIds.slice(0, (page * PAGE_LIMIT) + PAGE_LIMIT);
+    const allTickets = useCustomSelector(selectFilteredSortedTickets);
+    const ticketsShow = allTickets.slice(0, (page * PAGE_LIMIT) + PAGE_LIMIT);
 
     const loadMore = useCallback<MouseEventHandler>(() => {
         setPage(prevPage => prevPage + 1);
     }, []);
+
+    const dispatch = useCustomDispatch();
+    useEffect(() => {
+        dispatch(fetchTicketsChaining());
+    }, [dispatch]);
     
     return <div className={ className }>
-        { ticketsShowIds.map( (ticketId) => {
-            const ticket = ticketsEntities[ticketId];
-            return ticket && <TicketsItem key={ ticketId } ticket={ ticket } />
+        { ticketsShow.map( (ticket) => {
+            return <TicketsItem key={ ticket.id } ticket={ ticket } />
         } ) }
         {
-            ticketsShowIds.length < ticketsIds.length &&
+            ticketsShow.length < allTickets.length &&
             <Button
                 onClick={ loadMore }
                 styleType="primary"

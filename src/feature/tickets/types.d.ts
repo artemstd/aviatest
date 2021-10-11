@@ -1,4 +1,6 @@
 import { CaseReducer, PayloadAction, SliceCaseReducers, Action } from "@reduxjs/toolkit";
+import { ITicketsFilterState } from "../tickets-filter/types";
+import { ITicketsSortState } from "../tickets-sort/types";
 
 interface ITicketsEntitySegment {
     // Код города (iata)
@@ -14,6 +16,8 @@ interface ITicketsEntitySegment {
 };
 
 export interface ITicketsEntity {
+  // уникальное значение не приходит с бэка, поэтому формируем ID на фронте
+  id?: string
   // Цена в рублях
   price: number
   // Код авиакомпании (iata)
@@ -54,4 +58,14 @@ export interface IFetchTicketsResponseData {
 
 export interface IFetchSearchIdResponseData {
   searchId: string
+}
+
+export type ITicketsFilterHandlers = {
+  [K in keyof ITicketsFilterState]: (ticket: ITicketsEntity, filter: ITicketsFilterState[K]) => boolean
+}
+
+export type ITicketsSortHandlers = {
+  [K in ITicketsSortState["field"]]: (tickets: ITicketsEntity[]) => ITicketsEntity[]
+} & {
+  [K: string]: any
 }

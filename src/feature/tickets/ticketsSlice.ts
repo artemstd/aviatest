@@ -1,11 +1,15 @@
-import { createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { ITicketsReducers, ITicketsAdditionalState, TTicketsName, IFetchSearchIdResponseData, IFetchTicketsResponseData, IFetchTicketsRequestParams, ITicketsEntity } from "./types";
 import * as ticketsAPI from "./ticketsAPI";
 import { IRootState, TCustomThunkAction } from "../../common/types";
+import md5 from "md5";
+import { selectTicketsFilter } from "../tickets-filter/ticketsFilterSlice";
+import { selectTicketsSortField } from "../tickets-sort/ticketsSortSlice";
+import ticketsFilterHandlers from "./ticketsFilterHandlers";
+import ticketsSortHandlers from "./ticketsSortHandlers";
+import { isEmpty } from "lodash";
 
-const ticketsEntityAdapter = createEntityAdapter<ITicketsEntity>({
-    selectId: (ticket) => JSON.stringify(ticket)
-});
+const ticketsEntityAdapter = createEntityAdapter<ITicketsEntity>();
 
 const initialState = ticketsEntityAdapter.getInitialState<ITicketsAdditionalState>({
     isLoading: false,
@@ -19,6 +23,12 @@ const fetchSearchId = (): TCustomThunkAction<Promise<PayloadAction<IFetchSearchI
 
 const fetchTickets = (params: IFetchTicketsRequestParams): TCustomThunkAction<Promise<PayloadAction<IFetchTicketsResponseData>>> => async (dispatch) => {
     const resp = await ticketsAPI.fetchTickets(params);
+    const { tickets } = resp.data;
+    tickets.forEach((ticket) => {
+        if (!ticket.id) {
+            ticket.id = md5(JSON.stringify(ticket));
+        }
+    });
     return dispatch(ticketsFetched(resp.data));
 };
 
@@ -62,7 +72,7 @@ const ticketsSlice = createSlice<typeof initialState, ITicketsReducers<typeof in
         },
         ticketsFetched: (state, action) => {
             ticketsEntityAdapter.addMany(state, action.payload.tickets)
-            state.searchStop = true//!!action.payload.stop;
+            state.searchStop = !!action.payload.stop;
         }
     }
 });
@@ -70,9 +80,24 @@ const ticketsSlice = createSlice<typeof initialState, ITicketsReducers<typeof in
 export const { loadingStart, loadingSuccess, loadingError, searchIdFetched, ticketsFetched } = ticketsSlice.actions;
 
 export const {
-    selectAll: selectAllTickets,
-    selectEntities: selectEntitiesTickets,
-    selectIds: selectIdsTickets
+    selectAll: selectAllTickets
 } = ticketsEntityAdapter.getSelectors<IRootState>(state => state.tickets);
+
+export const selectFilteredSortedTickets = createSelector(
+    selectAllTickets,
+    selectTicketsFilter,
+    selectTicketsSortField,
+    (allTickets, ticketsFilter, sortField) => {
+        const filters = Object.keys(ticketsFilter) as [keyof typeof ticketsFilter];
+        let filteredTickets = allTickets;
+        for(let filter of filters) {
+            if (!isEmpty(ticketsFilter[filter])) {
+                filteredTickets = filteredTickets.filter(ticket => ticketsFilterHandlers[filter](ticket, ticketsFilter[filter] as any));
+            }
+        }
+    
+        return ticketsSortHandlers[sortField](filteredTickets);
+    }
+);
 
 export default ticketsSlice.reducer;

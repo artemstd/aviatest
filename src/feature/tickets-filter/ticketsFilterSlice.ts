@@ -25,6 +25,7 @@ export const {
     setTicketsFilterStops
 } = ticketsFilterSlice.actions;
 
-export const selectTicketsFilterStops = (state: IRootState) => state.ticketsFilter.stops;
+export const selectTicketsFilter = (state: IRootState) => state.ticketsFilter;
+export const selectTicketsFilterStops = (state: IRootState) => selectTicketsFilter(state).stops;
 
 export default ticketsFilterSlice.reducer;
