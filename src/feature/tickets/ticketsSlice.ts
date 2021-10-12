@@ -83,6 +83,8 @@ export const {
     selectAll: selectAllTickets
 } = ticketsEntityAdapter.getSelectors<IRootState>(state => state.tickets);
 
+export const selectIsLoadingTickets = (state: IRootState) => state.tickets.isLoading;
+
 export const selectFilteredSortedTickets = createSelector(
     selectAllTickets,
     selectTicketsFilter,
